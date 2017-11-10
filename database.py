@@ -6,7 +6,7 @@ import pymysql
 class Database(object):
     """docstring for Database."""
     db = pymysql.connect(host="localhost", user="root",
-                         passwd="sudeep", db="codely")
+                         passwd="mohak666", db="codely")
     cursor = db.cursor()
 
     @staticmethod
@@ -18,11 +18,19 @@ class Database(object):
         return True
 
     @staticmethod
+    def check_can_login(username, password):
+        done = Database.cursor.execute("select * from user where\
+                                        username=\"%s\" and password=\"%s\"" % (username, password))
+        if done == 0:
+            return False
+        return True
+
+    @staticmethod
     def add_user(username, password):
         try:
             Database.cursor.execute("insert into user values(\"%s\", \"%s\");"
                                     % (username, password))
             Database.db.commit()
-            return {"success": "Successfully added %s user" % (username)}
+            return {"success": "Successfully signed up as %s" % (username)}
         except pymysql.err.IntegrityError as e:
             return {"error": e.args[1]}

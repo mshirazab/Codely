@@ -14,5 +14,21 @@ $(function() {
     $(this).addClass('active');
     e.preventDefault();
   });
+  // $('#register-form').submit(function() {
+  //   // var success = $('<div class="alert alert-success alert-dismissable fade in" />');
+  //   var error = $('<div class="alert alert-danger alert-dismissable fade in" />');
+  //   // $('#register-form').append(success)
+  //   // TODO: Both are same password thing
+  //   $.ajax({
+  //     url: '/sign_up',
+  //     data: $('form').serialize(),
+  //     type: 'POST'
+  //   }).done((request) => {
+  //     if(request.error) {
+  //       $register-form.append(error);
+  //       return false;
+  //     }
+  //   });
+  // });
 
 });

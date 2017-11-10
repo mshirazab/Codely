@@ -1,11 +1,13 @@
 body {
   background: url("../img/background.jpg");
+  background-size: cover;
   font-family: 'Barlow Condensed', sans-serif;
+  font-size: 17px;
 }
 
 .navbar-default {
   background-color: #222;
-  border: 0px;
+  border: 0;
   font-family: 'VT323', monospace;
 }
 
@@ -18,13 +20,14 @@ body {
 }
 
 .navbar-default .navbar-brand {
-  text-transform: uppercase;
   color: #16A085;
+  font-size: 24px;
+  text-transform: uppercase;
 }
 
 .navbar-default .navbar-brand:focus, .navbar-default .navbar-brand:hover {
-  text-transform: uppercase;
   color: #085043;
+  text-transform: uppercase;
 }
 .navbar-default .navbar-collapse, .navbar-default .navbar-form  {
   border-color: #555;
