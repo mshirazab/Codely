@@ -1,0 +1,5 @@
+Flask==0.12.2
+Werkzeug==0.12.2
+fuzzywuzzy==0.15.1
+PyMySQL==0.7.11
+requests==2.11.1
