@@ -30,3 +30,4 @@ create database if not exists codely;
     topic varchar(20),
     foreign key(repo_id, topic)
   );
+-- End of file --
