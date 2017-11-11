@@ -15,8 +15,7 @@ def index():
         return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('sign_in'))
-
-
+# /<name>/<hello>
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
@@ -56,7 +55,7 @@ def sign_in():
 @authenticated_resource
 def  dashboard():
     if request.method == 'GET':
-        return render_template('./dashboard.html')
+        return render_template('./dashboard.html',repositories=['Asaads','aadwda','aevrf'])
 
 @app.route('/logout', methods=['GET'])
 @authenticated_resource

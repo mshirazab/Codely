@@ -4,3 +4,23 @@ body {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 17px;
 }
+.repo-background{
+  background-color: black;
+  border:1px solid grey;
+  margin-top:10vh;
+  padding:20px 50px;
+}
+.repositories-heading{
+  color: #16A085;
+  font-family: 'Barlow Condensed', sans-serif;
+}
+.list-item{
+  background-color: black;
+}
+.list-item:hover,
+.list-item:focus{
+  background-color: #424242;
+}
+a:hover,a:focus{
+  color:#16A085;
+}
