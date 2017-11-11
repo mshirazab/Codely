@@ -34,3 +34,9 @@ class Database(object):
             return {"success": "Successfully signed up as %s" % (username)}
         except pymysql.err.IntegrityError as e:
             return {"error": e.args[1]}
+
+    @staticmethod
+    def get_repositories(username):
+        Database.cursor.execute("select * from user where\
+                                 username=\"%s\" and password=\"%s\"" % (username, password))
+        return True

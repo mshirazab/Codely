@@ -5,6 +5,7 @@ from flask import render_template
 # , abort
 from utils.authentication import authenticated_resource
 import os
+
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
@@ -15,6 +16,7 @@ def index():
         return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('sign_in'))
+
 # /<name>/<hello>
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -56,11 +58,14 @@ def  dashboard():
         return render_template('./dashboard.html',repositories=['Asaads','aadwda','aevrf'])
 
 @app.route('/logout', methods=['GET'])
-@authenticated_resource
 def logout():
     if request.method == 'GET':
         session.pop('user', None)
         return redirect(url_for('index'))
+
+@app.route('/repos/<username>/<repos>')
+def repos(username, repos):
+    
 
 
 if __name__ == "__main__":
