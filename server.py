@@ -24,8 +24,6 @@ def register():
         username = (request.form['username']).lower().strip()
         password = (request.form['password'])
         is_valid_username = db.add_user(username, password)
-        for key in is_valid_username:
-            print key, is_valid_username[key]
         if is_valid_username.has_key('success'):
             flash(is_valid_username['success'] + '. Sign in now.', 'register_success')
             return redirect(url_for("sign_in"))
