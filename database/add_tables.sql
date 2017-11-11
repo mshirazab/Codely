@@ -9,25 +9,25 @@ create database if not exists codely;
   create table repositories(
     repo_id int primary key,
     repo_name varchar(20),
-    owner varchar(50), foreign key(owner) references user(username),
-    unique(username, repo_name)
+    owner varchar(50), foreign key(owner) references users(username),
+    unique(owner, repo_name)
   );
   drop table if exists commits;
   create table commits(
-    username varchar(50), foreign key(username) references user(username),
-    repo_id int, foreign key(repo_id) references repository(repo_id),
-    commit_time datetime,
+    username varchar(50), foreign key(username) references users(username),
+    repo_id int, foreign key(repo_id) references repositories(repo_id),
+    commit_time datetime
   );
   drop table if exists collaborators;
   create table collaborators(
-    username varchar(50), foreign key(username) references user(username),
-    repo_id int, foreign key(repo_id) references repository(repo_id),
+    username varchar(50), foreign key(username) references users(username),
+    repo_id int, foreign key(repo_id) references repositories(repo_id),
     primary key(username, repo_id)
   );
   drop table if exists repo_tags;
   create table repo_tags(
-    repo_id int, foreign key(repo_id) references repository(repo_id),
+    repo_id int, foreign key(repo_id) references repositories(repo_id),
     topic varchar(20),
-    foreign key(repo_id, topic)
+    primary key(repo_id, topic)
   );
 -- End of file --
