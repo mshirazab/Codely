@@ -30,6 +30,7 @@ def register():
             flash(is_valid_username['success'] + '. Sign in now.', 'register_success')
             return redirect(url_for("sign_in"))
         else:
+            print is_valid_username
             flash('Username is already taken', 'register_error')
             return redirect(url_for("register"))
 
@@ -55,7 +56,8 @@ def sign_in():
 @authenticated_resource
 def  dashboard():
     if request.method == 'GET':
-        return render_template('./dashboard.html',repositories=['Asaads','aadwda','aevrf'])
+        repositories = [row[1] for row in db.get_repositories(session['user'])]
+        return render_template('./dashboard.html',repositories=repositories)
 
 @app.route('/logout', methods=['GET'])
 def logout():
@@ -63,9 +65,9 @@ def logout():
         session.pop('user', None)
         return redirect(url_for('index'))
 
-@app.route('/repos/<username>/<repos>')
-def repos(username, repos):
-    
+# @app.route('/repos/<username>/<repos>')
+# def repos(username, repos):
+#
 
 
 if __name__ == "__main__":

@@ -11,7 +11,7 @@ class Database(object):
 
     @staticmethod
     def check_valid_username(username):
-        done = Database.cursor.execute("select * from user where\
+        done = Database.cursor.execute("select * from users where\
                                         username=\"%s\"" % (username))
         if done == 0:
             return False
@@ -19,7 +19,7 @@ class Database(object):
 
     @staticmethod
     def check_can_login(username, password):
-        done = Database.cursor.execute("select * from user where\
+        done = Database.cursor.execute("select * from users where\
                                         username=\"%s\" and password=\"%s\"" % (username, password))
         if done == 0:
             return False
@@ -28,7 +28,7 @@ class Database(object):
     @staticmethod
     def add_user(username, password):
         try:
-            Database.cursor.execute("insert into user values(\"%s\", \"%s\");"
+            Database.cursor.execute("insert into users values(\"%s\", \"%s\");"
                                     % (username, password))
             Database.db.commit()
             return {"success": "Successfully signed up as %s" % (username)}
@@ -37,6 +37,15 @@ class Database(object):
 
     @staticmethod
     def get_repositories(username):
-        Database.cursor.execute("select * from user where\
-                                 username=\"%s\" and password=\"%s\"" % (username, password))
-        return True
+        Database.cursor.execute("select * from repositories where\
+                                 owner=\"%s\"" % (username))
+        return Database.cursor.fetchall()
+
+    def add_repositories(repo_name, username):
+            try:
+                Database.cursor.execute("insert into repositories(repo_name, owner) values(\"%s\", \"%s\");"
+                                        % (repo_name, username))
+                Database.db.commit()
+                return {"success": "Successfully signed up as %s" % (username)}
+            except pymysql.err.IntegrityError as e:
+                return {"error": e.args[1]}
