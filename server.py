@@ -1,8 +1,7 @@
 from utils.database import Database as db
 from flask import Flask, session, request, flash, redirect, url_for, session
 # , redirect, url_for, session, request
-from flask import render_template
-# , abort
+from flask import render_template,abort
 from utils.authentication import authenticated_resource
 import os
 
@@ -17,7 +16,15 @@ def index():
     else:
         return redirect(url_for('sign_in'))
 
-# /<name>/<hello>
+
+@app.route('/<username>', methods=['GET'])
+def user_url(username):
+    if 'user' in session:
+        return redirect(url_for('dashboard'))
+    else:
+        abort(404)
+    
+    
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'GET':
@@ -30,7 +37,7 @@ def register():
             flash(is_valid_username['success'] + '. Sign in now.', 'register_success')
             return redirect(url_for("sign_in"))
         else:
-            print is_valid_username
+            #print is_valid_username
             flash('Username is already taken', 'register_error')
             return redirect(url_for("register"))
 
