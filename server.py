@@ -8,6 +8,8 @@ import os
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+UPLOAD_FOLDER = './data_files'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 @app.route('/', methods=['GET'])
@@ -68,6 +70,22 @@ def logout():
 # @app.route('/repos/<username>/<repos>')
 # def repos(username, repos):
 #
+@app.route('/add_repositories', methods=['GET', 'POST'])
+def add_repositories():
+    if request.method == 'GET':
+        return redirect(url_for('dashboard'))
+    else:
+        files = request.files.to_dict(flat=False)['files']
+        if files:
+            print len(files)
+            print files
+            for file in files:
+                try:
+                    os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'],'/'.join(file.filename.split('/')[:-1])))
+                except OSError:
+                    pass
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'],file.filename))
+            return 'hello'
 
 
 if __name__ == "__main__":
