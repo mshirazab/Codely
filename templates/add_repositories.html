@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  {% include './includes/imports.html' %} {% include './includes/header.html' %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/logged_in.css')}}" type="text/css" />
+</head>
+
+<body>
+  <form id="login-form" action="/add_repositories" method="post" role="form" style="display: block;" enctype="multipart/form-data">
+    <div class="form-group">
+      <input class="btn" type="file" id="file_input" name="files" webkitdirectory="" directory="">
+    </div>
+    <div class="form-group">
+      <input type="text" name="repo_name" id="repo_name" tabindex="1" class="form-control" placeholder="Repository Name" value="">
+    </div>
+    <div class="form-group">
+      <input class="btn" type="submit">
+    </div>
+  </form>
+</body>
+
+</html>

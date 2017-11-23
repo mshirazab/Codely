@@ -41,6 +41,7 @@ class Database(object):
                                  owner=\"%s\"" % (username))
         return Database.cursor.fetchall()
 
+    @staticmethod
     def add_repositories(repo_name, username):
             try:
                 Database.cursor.execute("insert into repositories(repo_name, owner) values(\"%s\", \"%s\");"

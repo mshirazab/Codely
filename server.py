@@ -1,8 +1,9 @@
 from utils.database import Database as db
-from flask import Flask, session, request, flash, redirect, url_for, session
-# , redirect, url_for, session, request
-from flask import render_template,abort
 from utils.authentication import authenticated_resource
+from utils.nocache import nocache
+
+from flask import Flask, session, request, flash, redirect, url_for, session
+from flask import render_template,abort
 import os
 
 app = Flask(__name__)
@@ -12,6 +13,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 @app.route('/', methods=['GET'])
+@nocache
 def index():
     if 'user' in session:
         return redirect(url_for('dashboard'))
@@ -20,14 +22,16 @@ def index():
 
 
 @app.route('/<username>', methods=['GET'])
+@nocache
 def user_url(username):
     if 'user' in session:
         return redirect(url_for('dashboard'))
     else:
         abort(404)
-    
-    
+
+
 @app.route('/register', methods=['GET', 'POST'])
+@nocache
 def register():
     if request.method == 'GET':
         return render_template('./register.html', logged_in=False)
@@ -44,6 +48,7 @@ def register():
             return redirect(url_for("register"))
 
 @app.route('/sign_in', methods=['GET', 'POST'])
+@nocache
 def sign_in():
     if request.method == 'GET':
         if 'user' in session:
@@ -62,6 +67,7 @@ def sign_in():
 
 
 @app.route('/dashboard', methods=['GET'])
+@nocache
 @authenticated_resource
 def  dashboard():
     if request.method == 'GET':
@@ -69,6 +75,7 @@ def  dashboard():
         return render_template('./dashboard.html',repositories=repositories)
 
 @app.route('/logout', methods=['GET'])
+@nocache
 def logout():
     if request.method == 'GET':
         session.pop('user', None)
@@ -78,21 +85,25 @@ def logout():
 # def repos(username, repos):
 #
 @app.route('/add_repositories', methods=['GET', 'POST'])
+@nocache
+@authenticated_resource
 def add_repositories():
-    if request.method == 'GET':
-        return redirect(url_for('dashboard'))
-    else:
+    if request.method == 'POST':
+        repo_name = (request.form['repo_name']).lower().strip()
         files = request.files.to_dict(flat=False)['files']
         if files:
-            print len(files)
             print files
+            print repo_name
+            filefolder = app.config['UPLOAD_FOLDER']+'/'+session['user']+'/'+repo_name+'/'
             for file in files:
                 try:
-                    os.makedirs(os.path.join(app.config['UPLOAD_FOLDER'],'/'.join(file.filename.split('/')[:-1])))
+                    os.makedirs(filefolder+'/'.join(file.filename.split('/')[1:-1]))
+                    db.add_repositories(repo_name, session['user'])
                 except OSError:
                     pass
-                file.save(os.path.join(app.config['UPLOAD_FOLDER'],file.filename))
-            return 'hello'
+                file.save(filefolder+'/'.join(file.filename.split('/')[1:]))
+            return redirect(url_for('dashboard'))
+    return render_template('./add_repositories.html')
 
 
 if __name__ == "__main__":

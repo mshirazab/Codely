@@ -13,16 +13,10 @@
     <hr>
     <ul class="list-group">
       {% for repo in repositories %}
-      <li class="list-group-item list-item"><a href="/repos/">{{ repo }}</a></li>
+      <a href="/repos/"><li class="list-group-item list-item">{{ repo }}</li></a>
       {% endfor %}
-      <form id="login-form" action="/add_repositories" method="post" role="form" style="display: block;" enctype="multipart/form-data">
-        <div class="form-group">
-          <input class="btn" type="file" id="file_input" name="files" webkitdirectory="" directory="">
-        </div>
-        <div class="form-group">
-          <input class="btn" type="submit">
-        </div>
-      </form>
+      <hr>
+      <a href="/add_repositories"><li class="list-group-item list-item text-center">Add repositories</li></a>
     </ul>
   </div>
 </body>
