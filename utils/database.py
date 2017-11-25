@@ -6,7 +6,7 @@ import pymysql
 class Database(object):
     """docstring for Database."""
     db = pymysql.connect(host="localhost", user="root",
-                         passwd="mohak666", db="codely")
+                         passwd="sudeep", db="codely")
     cursor = db.cursor()
 
     @staticmethod
@@ -19,8 +19,9 @@ class Database(object):
 
     @staticmethod
     def check_can_login(username, password):
-        done = Database.cursor.execute("select * from users where\
-                                        username=\"%s\" and password=\"%s\"" % (username, password))
+        query = "select * from users where username=\"%s\" and\
+        password=\"%s\"" % (username, password)
+        done = Database.cursor.execute(query)
         if done == 0:
             return False
         return True
@@ -36,17 +37,26 @@ class Database(object):
             return {"error": e.args[1]}
 
     @staticmethod
-    def get_repositories(username):
-        Database.cursor.execute("select * from repositories where\
+    def get_user_repos(username):
+        Database.cursor.execute("select repo_name from repositories where\
                                  owner=\"%s\"" % (username))
         return Database.cursor.fetchall()
 
     @staticmethod
     def add_repositories(repo_name, username):
             try:
-                Database.cursor.execute("insert into repositories(repo_name, owner) values(\"%s\", \"%s\");"
-                                        % (repo_name, username))
+                query = "insert into repositories(repo_name, owner)\
+                 values(\"%s\", \"%s\");" % (repo_name, username)
+                Database.cursor.execute(query)
                 Database.db.commit()
-                return {"success": "Successfully signed up as %s" % (username)}
+                return {"success": "Successfully added %s" % (repo_name)}
             except pymysql.err.IntegrityError as e:
                 return {"error": e.args[1]}
+
+    @staticmethod
+    def check_valid_repo(username, repo_name):
+        done = Database.cursor.execute("select repo_name from repositories where\
+        owner=\"%s\" and repo_name=\"%s\"" % (username, repo_name))
+        if done == 0:
+            return False
+        return True

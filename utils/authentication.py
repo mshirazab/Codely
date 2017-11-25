@@ -1,6 +1,7 @@
 from flask import redirect, session, url_for
 from functools import wraps
 
+
 def authenticated_resource(f):
     @wraps(f)
     def decorated(*args, **kwargs):

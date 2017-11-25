@@ -13,7 +13,7 @@
     <hr>
     <ul class="list-group">
       {% for repo in repositories %}
-      <a href="/repos/"><li class="list-group-item list-item">{{ repo }}</li></a>
+      <a href="/{{session['user']}}/{{repo}}"><li class="list-group-item list-item">{{ repo }}</li></a>
       {% endfor %}
       <hr>
       <a href="/add_repositories"><li class="list-group-item list-item text-center">Add repositories</li></a>
