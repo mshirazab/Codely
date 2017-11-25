@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  {% include './includes/imports.html' %} {% include './includes/header.html' %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/highlight.css')}}" type="text/css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/logged_in.css')}}" type="text/css" /> {% if request.path.split('.')[-1] == 'py' %} {% set code_type= 'python' %} {% elif request.path.split('.')[-1] == 'java' %} {% set code_type= 'java' %} {% endif %}
+</head>
+
+<body>
+  <div class="container-fluid repo-background col-md-6 col-md-offset-3">
+    <div class="repositories-heading">
+      <h3>{{ request.path[6:] }}</h3> {% if session['user'] == request.path.split('/')[2] %}
+      <form id="commit-form" action="/add_commit/{{'/'.join(request.path.split('/')[2:4])}}" method="post" role="form" style="display: block;" enctype="multipart/form-data">
+        <a href="add_contributor">Add contributors</a>
+        <input type="file" name="file" id="file" class="inputfile" webkitdirectory="" directory=""/>
+        <label for="file" style="font-weight:100;"><a>Commit</a></label> {% endif %}
+      </form>
+      <script type="text/javascript">
+        document.getElementById("file").onchange = function() {
+          document.getElementById("commit-form").submit();
+        };
+      </script>
+    </div>
+    <ul class="list-group">
+      <pre style="background-color:black;border:none">
+          <code class="hljs {{ code_type }}">
+    {{ code }}
+        </code></pre>
+    </ul>
+  </div>
+  <script src="{{ url_for('static', filename='js/highlight.js')}}"></script>
+  <script>
+    hljs.initHighlightingOnLoad();
+  </script>
+</body>
+
+</html>

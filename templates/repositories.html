@@ -7,16 +7,32 @@
 </head>
 
 <body>
-  <div class="container-fluid repo-background col-md-4 col-md-offset-4">
-
-    <h3 class="repositories-heading text-center">Repositories</h3>
+  <div class="container-fluid repo-background col-md-6 col-md-offset-3">
+    <div class="repositories-heading">
+      <h3>{{ request.path }}</h3>
+      {% if session['user'] == request.path.split('/')[1] %}
+      <form id="commit-form" action="/add_commit/{{'/'.join(request.path.split('/')[1:3])}}" method="post" role="form" style="display: block;" enctype="multipart/form-data">
+        <a href="add_contributor">Add contributors</a>
+        <input type="file" name="file" id="file" class="inputfile" webkitdirectory="" directory=""/>
+        <label for="file" style="font-weight:100;"><a>Commit</a></label> {% endif %}
+      </form>
+    </div>
     <hr>
+    {% set path = 'root/'+'/'.join(request.path.split('/')[3:]) %}
+    {% if path == 'root/' %}
+    {% set path = 'root' %}
+    {% endif %}
     <ul class="list-group">
-      {% for repo in repositories %}
-      <a href="/repos/"><li class="list-group-item list-item">{{ repo }}</li></a>
+      {% if path != 'root' %}
+      <a href="{{ '/'.join(request.path.split('/')[:-1]) }}"><li class="list-group-item list-item">..</li></a>
+      {% endif %}
+      {% for elem in tree[path].folders %}
+      <a href="{{ request.path }}/{{ elem }}"><li class="list-group-item list-item">{{ elem }}</li></a>
       {% endfor %}
       <hr>
-      <a href="/add_repositories"><li class="list-group-item list-item text-center">Add repositories</li></a>
+      {% for elem in tree[path].files %}
+      <a href="/file{{request.path}}/{{elem}}"><li class="list-group-item list-item">{{ elem }}</li></a>
+      {% endfor %}
     </ul>
   </div>
 </body>
