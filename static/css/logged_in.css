@@ -1,5 +1,5 @@
 body {
-  background-image: url('https://speculationcorner.files.wordpress.com/2016/09/wp-1472985966932.png');
+  background-image: url('../img/logged_in.jpg');
   background-size: cover;
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 17px;
@@ -21,6 +21,19 @@ body {
 .list-item:focus{
   background-color: #424242;
 }
+a {
+  color:#16A085;
+  text-decoration: underline;
+}
 a:hover,a:focus{
   color:#16A085;
+  text-decoration: none;
+}
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
 }
