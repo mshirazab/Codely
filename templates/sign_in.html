@@ -1,83 +1,62 @@
-<!DOCTYPE html>
-<html>
+{% extends "./extends/main.html" %}
 
-<head>
-  {% include './includes/imports.html' %} {% include './includes/header.html' %}
+{% set title = request.path[1:].replace('_', ' ').capitalize() %}
 
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/logged_out.css')}}" type="text/css" />
-</head>
 
-<body>
-  <div class="container login-box">
-    <div class="row">
-      <div class="col-md-6 col-md-offset-3">
-        <div class="panel panel-login">
-          <div class="panel-heading">
-            <div class="row">
-              <div class="col-xs-12">
-                <a class="active" id="login-form-link">Login</a>
-              </div>
-            </div>
-            <hr>
-          </div>
-          <div class="panel-body">
-            <div class="row">
-              <div class="col-lg-12">
-                {% with errors = get_flashed_messages(category_filter=["register_success"]) %}
-                {% if errors %}
-                  <div class="alert alert-success">
-                    {%- for msg in errors %}
-                    {{ msg }}
-                    {% endfor -%}
-                  </div>
-                {% endif %}
-                {% endwith %}
-                {% with errors = get_flashed_messages(category_filter=["sign_in_error"]) %}
-                {% if errors %}
-                  <div class="alert alert-danger">
-                    {%- for msg in errors %}
-                    {{ msg }}
-                    {% endfor -%}
-                  </div>
-                {% endif %}
-                {% endwith %}
-                <form id="login-form" action="/sign_in" method="post" role="form" style="display: block;">
-                  <div class="form-group">
-                    <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
-                  </div>
-                  <div class="form-group">
-                    <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
-                  </div>
-                  <div class="form-group text-center" style="color: #888;">
-                    <input type="checkbox" tabindex="3" class="" name="remember" id="remember">
-                    <label for="remember"> Remember Me</label>
-                  </div>
-                  <div class="form-group">
-                    <div class="row">
-                      <div class="col-sm-6 col-sm-offset-3">
-                        <input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Log In">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <div class="row">
-                      <div class="col-lg-12">
-                        <div class="text-center">
-                          <a href="/recover" tabindex="5" class="form-links">Forgot Password?</a>
-                          <br>
-                          <a href="/register" tabindex="5" class="form-links">New user ?</a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
+
+{% block message %}
+
+  {% with success_msg = get_flashed_messages(category_filter=["register_success"]) %}
+  {% if success_msg %}
+    <div class="alert alert-success">
+      {%- for msg in success_msg %}
+      {{ msg }}
+      {% endfor -%}
+    </div>
+  {% endif %}
+  {% endwith %}
+
+  {% with errors = get_flashed_messages(category_filter=["sign_in_error"]) %}
+  {% if errors %}
+    <div class="alert alert-danger">
+      {%- for msg in errors %}
+      {{ msg }}
+      {% endfor -%}
+    </div>
+  {% endif %}
+  {% endwith %}
+
+{% endblock %}
+
+{% block content %}
+  <form id="login-form" action="/sign_in" method="post" role="form" style="display: block;">
+    <div class="form-group">
+      <input type="text" name="username" id="username" tabindex="1" class="form-control" placeholder="Username" value="">
+    </div>
+    <div class="form-group">
+      <input type="password" name="password" id="password" tabindex="2" class="form-control" placeholder="Password">
+    </div>
+    <div class="form-group text-center" style="color: #888;">
+      <input type="checkbox" tabindex="3" class="" name="remember" id="remember">
+      <label for="remember"> Remember Me</label>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+          <input type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="Log In">
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="text-center">
+            <a href="/recover" tabindex="5" class="panel-links">Forgot Password?</a>
+            <br>
+            <a href="/register" tabindex="5" class="panel-links">New user ?</a>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</body>
-
-</html>
+  </form>
+{% endblock %}

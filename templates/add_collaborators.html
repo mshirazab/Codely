@@ -1,0 +1,19 @@
+{% extends "./extends/main.html" %}
+
+{% set title = 'Add Collaborators' %}
+
+{% block content %}
+<form id="search-form" action="{{request.path}}" method="post" role="search" style="display: block;">
+    <div class="form-group">
+      <input type="text" name="collab_name" id="collab_name" tabindex="1" class="form-control" placeholder="Collaborator Name" value="">
+    </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+
+          <input type="submit" tabindex="4" class="form-control btn btn-login" value="Add Collab">
+        </div>
+      </div>
+    </div
+  </form>
+{% endblock %}

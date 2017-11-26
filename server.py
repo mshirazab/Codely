@@ -1,16 +1,16 @@
 from utils.database import Database as db
-from utils.authentication import authenticated_resource
 import utils.authentication as auth
-from utils.nocache import nocache
 from utils.repos import RepositoryHandling as rh
+from utils.authentication import authenticated_resource
+from utils.nocache import nocache
 
 from flask import Flask, session, request, redirect, url_for
-from flask import render_template, abort
+from flask import render_template, abort, flash
 import os
 import magic
-from time import gmtime, strftime
 
 mime = magic.Magic(mime=True)
+
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 UPLOAD_FOLDER = './data_files'
@@ -58,18 +58,18 @@ def logout():
 @nocache
 @authenticated_resource
 def dashboard():
-    if request.method == 'GET':
-        repositories = [row[0] for row in db.get_user_repos(session['user'])]
-        return render_template('./dashboard.html', repositories=repositories)
+    return redirect(url_for('repositories', username=session['user']))
 
 
 @app.route('/add_repositories', methods=['GET', 'POST'])
 @nocache
 @authenticated_resource
 def add_repositories():
+    print 'add_repositories'
     if request.method == 'POST':
         repo_name = (request.form['repo_name']).lower().strip()
-        files = request.files.to_dict(flat=False)['files']
+        print request.files.to_dict(flat=False)
+        files = request.files.to_dict(flat=False)['file']
         return rh.add_repository(app.config['UPLOAD_FOLDER'],
                                  session['user'], repo_name, files)
     return render_template('./add_repositories.html')
@@ -77,21 +77,31 @@ def add_repositories():
 
 @app.route('/<username>/<path:path>', methods=['GET'])
 @nocache
-def repositories(username, path):
+def repository(username, path):
+    print 'repository'
     repo_name = path.split('/')[0]
     if db.check_valid_repo(username, repo_name):
         req_path = app.config['UPLOAD_FOLDER'] + '/'
         req_path += username + '/'
         req_path += path
         tree = rh.get_files(req_path)
-        return render_template('./repositories.html', tree=tree)
+        return render_template('./repository.html', tree=tree)
     else:
         abort(404)
+
+
+@app.route('/<username>', methods=['GET'])
+@nocache
+def repositories(username):
+    print 'repositories'
+    repositories = [row[0] for row in db.get_user_repos(username)]
+    return render_template('./repositories.html', repositories=repositories)
 
 
 @app.route('/file/<path:path>', methods=['GET'])
 @nocache
 def file_display(path):
+    print 'file_display'
     path = app.config['UPLOAD_FOLDER'] + '/' + path
     if 'text' in mime.from_file(path):
         code = ""
@@ -108,103 +118,37 @@ def file_display(path):
 @nocache
 @authenticated_resource
 def add_commit(path):
+    print 'add_commit'
+    owner_name = path.split('/')[0]
+    repo_name = path.split('/')[1]
+    db.add_commit(session['user'],
+                  repo_id=db.get_repo_id(repo_name, owner_name))
     path = app.config['UPLOAD_FOLDER'] + '/' + path + '/'
     files = request.files.to_dict(flat=False)['file']
-    # shutil.rmtree(path)
     rh.add_commit(path, files)
-    return path
+    flash('Successfully commited', 'add_collab_succ')
+    return redirect(url_for('repository', username=owner_name, path=repo_name))
 
 
-''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-#database functions
+@app.route('/add_collaborators/<path:path>', methods=['GET', 'POST'])
+@nocache
+@authenticated_resource
+def add_collaborators(path):
+    print 'add_collaborators'
+    if request.method == 'POST':
+        owner_name = path.split('/')[0]
+        repo_name = path.split('/')[1]
+        username = (request.form['collab_name']).lower().strip()
+        message = db.add_collaborators(repo_id=db.get_repo_id(repo_name,
+                                       owner_name), username=username)
+        types = 'add_collab_err'
+        if 'Succ' in message:
+            types = 'add_collab_succ'
+        flash(message, types)
+        return redirect(url_for('repository',
+                        username=owner_name, path=repo_name))
+    return render_template('./add_collaborators.html')
 
-#I think all this should rather be in database.py but ill add it here for now
-
-#add data in repositories table
-def db_add_repositories(repo_name,username):
-    _db_ = pymysql.connect(host="localhost", user="root",passwd="sudeep", db="codely")
-    _cursor_ = _db_.cursor()
-    try:
-        query = "insert into repositories(repo_name, owner) values(\"%s\", \"%s\");" % (repo_name, username)
-        _cursor_.execute(query)
-        _db_.commit()
-        return {"success": "Successfully added %s" % (repo_name)}
-    except:
-                return "Repository addition failed"
-
-#add data in collaborators
-def db_add_collaborators(repo_id ,username):
-    _db_ = pymysql.connect(host="localhost", user="root",passwd="sudeep", db="codely")
-    _cursor_ = _db_.cursor()
-    
-    #this check can be avoid if we give add collaborator option from users who are only present in the db. Has to be implemented in the front end.
-    user_exists = db.check_valid_username(username)
-    if user_exists is False:
-        return "This user is not registered and hence can not be a collaborator"
-    try:
-        query = "insert into collaborators values(%d, \"%s\");" % (repo_id, username)
-        _cursor_.execute(query)
-        _db_.commit()
-        return {"success": "Successfully added %s" % (username)}
-    except:
-        return "Collaborator addition failed"
-
-#add data in tags
-def db_add_tags(repo_id,tag):
-    _db_ = pymysql.connect(host="localhost", user="root",passwd="sudeep", db="codely")
-    _cursor_ = _db_.cursor()
-    try:
-        query = "insert into tags values(%d, \"%s\");" % (repo_id, tag)
-        _cursor_.execute(query)
-        _db_.commit()
-        return {"success": "Successfully added %d to %s" % (tag,repo_id)}
-    except:
-        return "Tag addition failed"
-
-#adding data in commit
-def db_add_commit(username,repo_id):
-    _db_ = pymysql.connect(host="localhost", user="root",passwd="sudeep", db="codely")
-    _cursor_ = _db_.cursor()
-    try:
-        current_time = strftime("%Y-%m-%d %H:%M:%S", gmtime())
-        query = "insert into commits values(\"%s\",%d,\"%s\");" % (username,repo_id,current_time) #passing time as string to the database, verify its working.
-        _cursor_.execute(query)
-        _db_.commit()
-        return "Successfully committed"
-    except:
-        return "Commit failed"
-    
-#get data from repositories
-def db_get_repositories(username):
-    _db_ = pymysql.connect(host="localhost", user="root",passwd="sudeep", db="codely")
-    _cursor_ = _db_.cursor()
-    query = "select repo_name from repositories where owner=\"%s\"" % (username))
-    _cursor_.execute(query)
-    return _cursor_.fetchall()
-
-#get data from collaborators
-def db_get_collaborators(repo_id):
-    _db_ = pymysql.connect(host="localhost", user="root",passwd="sudeep", db="codely")
-    _cursor_ = _db_.cursor()
-    query = "select username from collaborators where repo_id=%d" % (repo_id))
-    _cursor_.execute(query)
-    return _cursor_.fetchall()
-
-#get data from commits
-def db_get_commits(repo_id):
-    _db_ = pymysql.connect(host="localhost", user="root",passwd="sudeep", db="codely")
-    _cursor_ = _db_.cursor()
-    query = "select username,commit_time from repositories where repo_id=%d" % (repo_id))
-    _cursor_.execute(query)
-    return _cursor_.fetchall()
-
-#get data from repositories
-def db_get_tags(repo_id):
-    _db_ = pymysql.connect(host="localhost", user="root",passwd="sudeep", db="codely")
-    _cursor_ = _db_.cursor()
-    query = "select topic from tags where repo_id=%d" % (repo_id))
-    _cursor_.execute(query)
-    return _cursor_.fetchall()
 
 if __name__ == "__main__":
     app.run(port=5000, threaded=True, debug=True, host='0.0.0.0')

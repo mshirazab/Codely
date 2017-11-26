@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  {% include './includes/imports.html' %} {% include './includes/header.html' %}
+  {% block extra_includes %}
+  {% endblock %}
+  <title>{{ title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/logged_out.css')}}" type="text/css" />
+</head>
+
+<body>
+  <div class="container main-box">
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+        <div class="panel panel-main">
+          <div class="panel-heading">
+            <div class="row">
+              <div class="col-xs-12">
+                <a>{{ title }}</a>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+                {% block header_button %}
+                {% endblock %}
+            </div>
+          </div>
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-lg-12">
+                {% block message %}
+                {% endblock %}
+                {% block content %}
+                {% endblock %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -4,36 +4,32 @@ body {
   font-family: 'Barlow Condensed', sans-serif;
   font-size: 17px;
 }
- .login-box  {
+ .main-box  {
   padding-top: 90px;
 }
-.panel-login {
+.panel-main {
   background-color: #222;
 	border-color: #555;
 	-webkit-box-shadow: 0 2px 3px 0 rgba(0,0,0,0.2);
 	-moz-box-shadow: 0 2px 3px 0 rgba(0,0,0,0.2);
 	box-shadow: 0 2px 3px 0 rgba(0,0,0,0.2);
 }
-.panel-login>.panel-heading {
+.panel-main>.panel-heading {
 	background-color: #222;
 	border-color: #333;
   color: #00415d;
 	text-align:center;
 }
-.panel-login>.panel-heading a{
-  color: #666;
-  font-size: 17px;
+.panel-main>.panel-heading a{
+	color: #16A085;
+	font-size: 20px;
 	font-weight: bold;
   text-decoration: none;
   transition: all 0.1s linear;
 	-webkit-transition: all 0.1s linear;
 	-moz-transition: all 0.1s linear;
 }
-.panel-login>.panel-heading .active{
-	color: #16A085;
-	font-size: 20px;
-}
-.panel-login>.panel-heading hr{
+.panel-main>.panel-heading hr{
   background-image: -webkit-linear-gradient(left,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0.15),rgba(0, 0, 0, 0));
 	background-image: -moz-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
 	background-image: -ms-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
@@ -44,7 +40,7 @@ body {
   margin-bottom: 0;
 	margin-top: 10px;
 }
-.panel-login input[type="text"],.panel-login input[type="email"],.panel-login input[type="password"] {
+.panel-main input[type="text"],.panel-main input[type="email"],.panel-main input[type="password"] {
   border: 1px solid #ddd;
   font-size: 16px;
 	height: 45px;
@@ -52,26 +48,26 @@ body {
 	-moz-transition: all 0.1s linear;
 	transition: all 0.1s linear;
 }
-.panel-login input:hover,
-.panel-login input:focus {
+.panel-main input:hover,
+.panel-main input:focus {
 	outline:none;
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	box-shadow: none;
 	border-color: #555;
 }
-.form-links {
+.panel-links {
 	text-decoration: underline;
 	color: #888;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
-.form-links:hover,
-.form-links:focus {
+.panel-links:hover,
+.panel-links:focus {
 	text-decoration: underline;
 	color: #666;
-  padding-left: 4px;
-  padding-right: 4px;
+  padding-left: 10px;
+  padding-right: 10px;
 }
 
 .btn-register {
@@ -106,4 +102,23 @@ body {
 	background-color: #1CA347;
 	border-color: #1CA347;
   color: #fff;
+}
+.list-group-item  {
+  background-color: #222;
+  border-color: #16A085;
+}
+.list-group-item:last-child {
+  margin-bottom: 15px;
+}
+hr {
+  border-top-color: #555;
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
 }

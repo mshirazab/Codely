@@ -1,23 +1,22 @@
-<!DOCTYPE html>
-<html>
+{% extends "./extends/main.html" %}
 
-<head>
-  {% include './includes/imports.html' %} {% include './includes/header.html' %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/logged_in.css')}}" type="text/css" />
-</head>
+{% set title = 'Add Collaborators' %}
 
-<body>
-  <form id="login-form" action="/add_repositories" method="post" role="form" style="display: block;" enctype="multipart/form-data">
-    <div class="form-group">
-      <input class="btn" type="file" id="file_input" name="files" webkitdirectory="" directory="">
-    </div>
+{% block content %}
+<form id="login-form" action="/add_repositories" method="post" role="form" style="display: block;" enctype="multipart/form-data">
     <div class="form-group">
       <input type="text" name="repo_name" id="repo_name" tabindex="1" class="form-control" placeholder="Repository Name" value="">
     </div>
     <div class="form-group">
-      <input class="btn" type="submit">
+      <input type="file" name="file" id="file" class="inputfile" webkitdirectory="" directory=""/>
+      <label for="file" style="font-weight:100;"><a class="panel-links text-center">Commit</a></label>
     </div>
+    <div class="form-group">
+      <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+          <input type="submit" tabindex="4" class="form-control btn btn-login" value="Add Collab">
+        </div>
+      </div>
+    </div
   </form>
-</body>
-
-</html>
+{% endblock %}

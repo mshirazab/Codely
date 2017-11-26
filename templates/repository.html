@@ -1,0 +1,62 @@
+{% extends "./extends/main.html" %}
+
+{% set title = request.path %}
+
+{% block header_button %}
+
+{% if session['user'] == request.path.split('/')[1] %}
+<form id="commit-form" action="/add_commit/{{'/'.join(request.path.split('/')[1:3])}}" method="post" role="form" style="display: block;" enctype="multipart/form-data">
+  <a href="/add_collaborators/{{'/'.join(request.path.split('/')[1:3])}}">Add collaborators</a>
+  <input type="file" name="file" id="file" class="inputfile" webkitdirectory="" directory=""/>
+  <label for="file" style="font-weight:100;"><a>Commit</a></label>
+</form>
+<script type="text/javascript">
+  document.getElementById("file").onchange = function() {
+    document.getElementById("commit-form").submit();
+  };
+</script>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+  {% set path = 'root/'+'/'.join(request.path.split('/')[3:]) %}
+  {% if path == 'root/' %}
+  {% set path = 'root' %}
+  {% endif %}
+  <ul class="list-group">
+    {% if path != 'root' %}
+    <a href="{{ '/'.join(request.path.split('/')[:-1]) }}"><li class="list-group-item list-item">..</li></a>
+    {% endif %}
+    {% for elem in tree[path].folders %}
+    <a href="{{ request.path }}/{{ elem }}"><li class="list-group-item list-item panel-links">{{ elem }}</li></a>
+    {% endfor %}
+    <hr>
+    {% for elem in tree[path].files %}
+    <a href="/file{{request.path}}/{{elem}}"><li class="list-group-item list-item panel-links">{{ elem }}</li></a>
+    {% endfor %}
+  </ul>
+</div>
+{% endblock %}
+
+{% block message %}
+
+  {% with success_msg = get_flashed_messages(category_filter=["add_collab_succ"]) %}
+  {% if success_msg %}
+    <div class="alert alert-success">
+      {%- for msg in success_msg %}
+      {{ msg }}
+      {% endfor -%}
+    </div>
+  {% endif %}
+  {% endwith %}
+  {% with errors = get_flashed_messages(category_filter=["add_collab_err"]) %}
+  {% if errors %}
+    <div class="alert alert-danger">
+      {%- for msg in errors %}
+      {{ msg }}
+      {% endfor -%}
+    </div>
+  {% endif %}
+  {% endwith %}
+
+{% endblock %}

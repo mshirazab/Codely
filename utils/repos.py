@@ -19,8 +19,6 @@ class RepositoryHandling:
     @staticmethod
     def add_repository(upload_folder, owner, repo_name, files):
         if files:
-            print files
-            print repo_name
             filefolder = upload_folder + '/'
             filefolder += owner + '/' + repo_name + '/'
             for file in files:
@@ -36,7 +34,6 @@ class RepositoryHandling:
     @staticmethod
     def add_commit(filefolder, files):
         if files:
-            print files
             for file in files:
                 try:
                     os.makedirs(filefolder+'/'.join(file.filename.split('/')
@@ -44,6 +41,4 @@ class RepositoryHandling:
                 except OSError:
                     pass
                 file.save(filefolder+'/'.join(file.filename.split('/')[1:]))
-            path = '/'.join(filefolder.split('/')[1:])
-            print path
             return redirect(url_for('dashboard'))

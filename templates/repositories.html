@@ -1,40 +1,26 @@
-<!DOCTYPE html>
-<html>
+{% extends "./extends/main.html" %}
 
-<head>
-  {% include './includes/imports.html' %} {% include './includes/header.html' %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/logged_in.css')}}" type="text/css" />
-</head>
+{% if session['user'] and session['user'] == request.path[1:] %}
+{% set title = 'Your' %}
+{% else %}
+{% set title = request.path[1:] + "'s" %}
+{% endif %}
+{% set title = title + ' Repositories' %}
 
-<body>
-  <div class="container-fluid repo-background col-md-6 col-md-offset-3">
-    <div class="repositories-heading">
-      <h3>{{ request.path }}</h3>
-      {% if session['user'] == request.path.split('/')[1] %}
-      <form id="commit-form" action="/add_commit/{{'/'.join(request.path.split('/')[1:3])}}" method="post" role="form" style="display: block;" enctype="multipart/form-data">
-        <a href="add_contributor">Add contributors</a>
-        <input type="file" name="file" id="file" class="inputfile" webkitdirectory="" directory=""/>
-        <label for="file" style="font-weight:100;"><a>Commit</a></label> {% endif %}
-      </form>
-    </div>
+{% block message %}
+{% endblock %}
+
+{% block content %}
+  <ul class="list-group">
+    {% for repo in repositories %}
+    <a href="/{{request.path[1:]}}/{{repo}}">
+      <li class="list-group-item list-item panel-links">{{ repo }}</li>
+    </a>
+    {% endfor %}{% if session['user'] and session['user'] == request.path[1:] %}
     <hr>
-    {% set path = 'root/'+'/'.join(request.path.split('/')[3:]) %}
-    {% if path == 'root/' %}
-    {% set path = 'root' %}
+    <a href="/add_repositories">
+      <li class="list-group-item list-item panel-links">Add repositories</li>
+    </a>
     {% endif %}
-    <ul class="list-group">
-      {% if path != 'root' %}
-      <a href="{{ '/'.join(request.path.split('/')[:-1]) }}"><li class="list-group-item list-item">..</li></a>
-      {% endif %}
-      {% for elem in tree[path].folders %}
-      <a href="{{ request.path }}/{{ elem }}"><li class="list-group-item list-item">{{ elem }}</li></a>
-      {% endfor %}
-      <hr>
-      {% for elem in tree[path].files %}
-      <a href="/file{{request.path}}/{{elem}}"><li class="list-group-item list-item">{{ elem }}</li></a>
-      {% endfor %}
-    </ul>
-  </div>
-</body>
-
-</html>
+  </ul>
+{% endblock %}

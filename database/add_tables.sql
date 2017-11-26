@@ -14,7 +14,7 @@ create database codely;
   create table commits(
     username varchar(50), foreign key(username) references users(username),
     repo_id int, foreign key(repo_id) references repositories(repo_id),
-    commit_time datetime
+    commit_time datetime default current_timestamp
   );
   create table collaborators(
     username varchar(50), foreign key(username) references users(username),
